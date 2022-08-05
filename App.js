@@ -10,13 +10,20 @@ import {
 } from "victory-native";
 
 const sampleData = [
-  { label: "Vanilla", value: 75 },
-  { label: "Carmel", value: 99 },
-  { label: "Smoke", value: 55 },
-  { label: "Spice", value: 100 },
-  { label: "Cherry", value: 21 },
-  { label: "Hazelnut", value: 52 },
-  { label: "Nutmeg", value: 42 },
+  { label: "Vanilla",  value: 60 },
+  { label: "Carmel",   value: 35 },
+  { label: "Smoke",    value: 37 },
+  { label: "Spice",    value: 76 },
+  { label: "Cherry",   value: 70 },
+  { label: "Hazelnut", value: 56 },
+  { label: "Nutmeg",   value: 64 },
+  { label: "Fruit",    value: 28 },
+  { label: "Citrus",   value: 58 },
+  { label: "Herb",     value: 25 },
+  { label: "Malt",     value: 52 },
+  { label: "Sweet",    value: 23 },
+  { label: "Bitter",   value: 50 },
+  { label: "Syrup",    value: 39 },
 ];
 
 export default function App() {
