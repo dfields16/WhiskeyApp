@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  Image,
-  View,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Image, View, SafeAreaView } from "react-native";
 import {
   VictoryGroup,
   VictoryArea,
@@ -22,11 +16,8 @@ import {
   Text,
   Flex,
   Divider,
-  Avatar,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-
-import { ListItem } from "@react-native-material/core";
 
 const sampleData = [
   { label: "Vanilla", value: 60 },
@@ -67,21 +58,44 @@ export default function App() {
         )}
       />
 
-      <ScrollView height="100%">
-        <ListItem
-          leadingMode="avatar"
-          leading={
-            <Image
-              style={{ width: "100%", height: "100%", aspectRatio: .75 }}
-              source={{
-                uri: "https://images.barcodelookup.com/26152/261527911-1.jpg",
-              }}
-            />
-          }
-          title="Balcones Peated"
-          trailing={(props) => <Icon name="chevron-right" {...props} />}
+      <Flex center direction="row" justifyContent="space-between" style={{ margin: 5 }}>
+        <Text variant="h4">Balcones Peated</Text>
+        <Image
+          style={{ width: "20%", height: "20%", aspectRatio: 0.5 }}
+          source={{
+            uri: "https://images.barcodelookup.com/26152/261527911-1.jpg",
+          }}
         />
-      </ScrollView>
+      </Flex>
+      <Divider style={{ marginBottom: 10 }}/>
+      <View style={{ height: "100%", aspectRatio: 0.5 }}>
+        <Text variant="h4">Tasting Notes:</Text>
+        <VictoryChart
+          polar
+          theme={VictoryTheme.material}
+          style={{ background: { fill: "transparent" } }}
+        >
+          <VictoryPolarAxis
+            label="label"
+            data={sampleData}
+            labelPlacement="vertical"
+            style={{
+              axisLabel: { padding: 30 },
+              data: { fill: "white" },
+            }}
+          />
+          <VictoryArea
+            x="label"
+            y="value"
+            data={sampleData}
+            interpolation="cardinal"
+            style={{
+              data: { fillOpacity: 0.2, strokeWidth: 2, fill: "orange" },
+              labels: { fill: "transparent" },
+            }}
+          />
+        </VictoryChart>
+      </View>
     </SafeAreaView>
   );
 }
