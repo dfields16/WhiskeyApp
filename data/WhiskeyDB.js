@@ -1,5 +1,5 @@
-export const WhiskeyDB = {
-  1: {
+export const whiskeyDB = {
+  "id_1": {
     name: "Balcones Peated",
     image: "https://images.barcodelookup.com/26152/261527911-1.jpg",
     tastingNotes: [
@@ -20,7 +20,7 @@ export const WhiskeyDB = {
       { label: "Syrup", value: 39 },
     ],
   },
-  2: {
+  "id_2": {
     name: "Balcones True Blue",
     image: "https://images.barcodelookup.com/20273/202736935-1.jpg",
     tastingNotes: [

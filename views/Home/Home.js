@@ -81,7 +81,21 @@ export default function Home({ navigation }) {
           }
           title="Balcones Peated"
           trailing={(props) => <Icon name="chevron-right" {...props} />}
-			 onPress={() => navigation.navigate(Views.WhiskeyView, {id: 1})}
+			 onPress={() => navigation.navigate(Views.WhiskeyView, {id: "id_1"})}
+        />
+        <ListItem
+          leadingMode="avatar"
+          leading={
+            <Image
+              style={{ width: "100%", height: "100%", aspectRatio: .75 }}
+              source={{
+                uri: "https://images.barcodelookup.com/20273/202736935-1.jpg",
+              }}
+            />
+          }
+          title="Balcones True Blue"
+          trailing={(props) => <Icon name="chevron-right" {...props} />}
+			 onPress={() => navigation.navigate(Views.WhiskeyView, {id: "id_2"})}
         />
       </ScrollView>
     </SafeAreaView>

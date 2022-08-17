@@ -19,6 +19,8 @@ import {
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
+import {whiskeyDB} from "../../data/WhiskeyDB"
+
 const sampleData = [
   { label: "Vanilla", value: 60 },
   { label: "Carmel", value: 72 },
@@ -41,7 +43,10 @@ export default function App({ route, navigation }) {
 
 	const { id } = route.params;
 
+	console.log(whiskeyDB);
 	console.log("Whiskey ID: " + id);
+
+	const whiskey = whiskeyDB[id];
 
   return (
     <SafeAreaView>
@@ -64,11 +69,11 @@ export default function App({ route, navigation }) {
       />
 
       <Flex center direction="row" justifyContent="space-between" style={{ margin: 5 }}>
-        <Text variant="h4">Balcones Peated</Text>
+        <Text variant="h4">{whiskey.name}</Text>
         <Image
           style={{ width: "20%", height: "20%", aspectRatio: 0.5 }}
           source={{
-            uri: "https://images.barcodelookup.com/26152/261527911-1.jpg",
+            uri: whiskey.image,
           }}
         />
       </Flex>
@@ -82,7 +87,7 @@ export default function App({ route, navigation }) {
         >
           <VictoryPolarAxis
             label="label"
-            data={sampleData}
+            data={whiskey.tastingNotes}
             labelPlacement="vertical"
             style={{
               axisLabel: { padding: 30 },
@@ -92,7 +97,7 @@ export default function App({ route, navigation }) {
           <VictoryArea
             x="label"
             y="value"
-            data={sampleData}
+            data={whiskey.tastingNotes}
             interpolation="cardinal"
             style={{
               data: { fillOpacity: 0.2, strokeWidth: 2, fill: "orange" },
