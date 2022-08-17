@@ -27,7 +27,9 @@ import {
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 import { ListItem } from "@react-native-material/core";
-import * as Views from '../Views'
+import * as Views from "../Views";
+
+import { whiskeyDB } from "../../data/WhiskeyDB";
 
 const sampleData = [
   { label: "Vanilla", value: 60 },
@@ -69,34 +71,27 @@ export default function Home({ navigation }) {
       />
 
       <ScrollView height="100%">
-        <ListItem
-          leadingMode="avatar"
-          leading={
-            <Image
-              style={{ width: "100%", height: "100%", aspectRatio: .75 }}
-              source={{
-                uri: "https://images.barcodelookup.com/26152/261527911-1.jpg",
-              }}
+        {Object.entries(whiskeyDB).map(([key, data]) => {
+          console.log(key + " : " + data);
+          return (
+            <ListItem
+              leadingMode="avatar"
+              leading={
+                <Image
+                  style={{ width: "100%", height: "100%", aspectRatio: 0.75 }}
+                  source={{
+                    uri: data.image,
+                  }}
+                />
+              }
+              title={data.name}
+              trailing={(props) => <Icon name="chevron-right" {...props} />}
+              onPress={() =>
+                navigation.navigate(Views.WhiskeyView, { id: key })
+              }
             />
-          }
-          title="Balcones Peated"
-          trailing={(props) => <Icon name="chevron-right" {...props} />}
-			 onPress={() => navigation.navigate(Views.WhiskeyView, {id: "id_1"})}
-        />
-        <ListItem
-          leadingMode="avatar"
-          leading={
-            <Image
-              style={{ width: "100%", height: "100%", aspectRatio: .75 }}
-              source={{
-                uri: "https://images.barcodelookup.com/20273/202736935-1.jpg",
-              }}
-            />
-          }
-          title="Balcones True Blue"
-          trailing={(props) => <Icon name="chevron-right" {...props} />}
-			 onPress={() => navigation.navigate(Views.WhiskeyView, {id: "id_2"})}
-        />
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
