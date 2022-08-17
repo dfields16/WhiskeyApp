@@ -1,96 +1,28 @@
 import React from "react";
-import {
-  StyleSheet,
-  Image,
-  View,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
-import {
-  VictoryGroup,
-  VictoryArea,
-  VictoryTheme,
-  VictoryChart,
-  VictoryAxis,
-  VictoryPolarAxis,
-} from "victory-native";
+import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeView from "./views/Home";
+import WhiskeyView from "./views/WhiskeyView";
+import * as Views from './views/Views'
 
-import {
-  AppBar,
-  HStack,
-  IconButton,
-  Text,
-  Flex,
-  Divider,
-  Avatar,
-} from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-import { ListItem } from "@react-native-material/core";
-
-const sampleData = [
-  { label: "Vanilla", value: 60 },
-  { label: "Carmel", value: 72 },
-  { label: "Smoke", value: 65 },
-  { label: "Peat", value: 80 },
-  { label: "Spice", value: 54 },
-  { label: "Cherry", value: 70 },
-  { label: "Hazelnut", value: 56 },
-  { label: "Nutmeg", value: 64 },
-  { label: "Fruit", value: 28 },
-  { label: "Citrus", value: 58 },
-  { label: "Herb", value: 25 },
-  { label: "Malt", value: 52 },
-  { label: "Sweet", value: 23 },
-  { label: "Bitter", value: 50 },
-  { label: "Syrup", value: 39 },
-];
+const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <SafeAreaView>
-      <AppBar
-        title="Whiskey"
-        leading={(props) => (
-          <IconButton
-            icon={(props) => <Icon name="menu" {...props} />}
-            {...props}
-          />
-        )}
-        trailing={(props) => (
-          <HStack>
-            <IconButton
-              icon={(props) => <Icon name="magnify" {...props} />}
-              {...props}
-            />
-          </HStack>
-        )}
-      />
-
-      <ScrollView height="100%">
-        <ListItem
-          leadingMode="avatar"
-          leading={
-            <Image
-              style={{ width: "100%", height: "100%", aspectRatio: .75 }}
-              source={{
-                uri: "https://images.barcodelookup.com/26152/261527911-1.jpg",
-              }}
-            />
-          }
-          title="Balcones Peated"
-          trailing={(props) => <Icon name="chevron-right" {...props} />}
-        />
-      </ScrollView>
-    </SafeAreaView>
-  );
+	return (
+		<NavigationContainer>
+			<Stack.Navigator screenOptions={{headerShown: false}} initialRouteName={Views.HomeView}>
+				<Stack.Screen name={Views.HomeView}    component={HomeView} />
+				<Stack.Screen name={Views.WhiskeyView} component={WhiskeyView} />
+			</Stack.Navigator>
+		</NavigationContainer>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#312e4d",
-  },
+	container: {
+		flex: 1,
+		alignItems: "center",
+	},
 });

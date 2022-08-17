@@ -37,7 +37,12 @@ const sampleData = [
   { label: "Syrup", value: 39 },
 ];
 
-export default function App() {
+export default function App({ route, navigation }) {
+
+	const { id } = route.params;
+
+	console.log("Whiskey ID: " + id);
+
   return (
     <SafeAreaView>
       <AppBar
