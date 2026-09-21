@@ -43,9 +43,15 @@ docker build -t whiskeyapp .
 docker run -d --name whiskeyapp -p 3001:3001 -v whiskey-data:/data whiskeyapp
 ```
 
+## Scanning a barcode (mobile)
+
+The Basics step of the add/edit form has a **📷 Scan Barcode** button that opens your camera, reads a UPC/EAN barcode, and looks it up to pre-fill the name, type, and distillery/brand fields (anything you've already typed is left alone). It uses two free, keyless APIs — [Open Food Facts](https://world.openfoodfacts.org/) first, then [UPCitemdb](https://www.upcitemdb.com/)'s trial endpoint (capped at 100 lookups/day per server) as a fallback — so coverage varies by product and neither is whiskey-specific; you'll often still need to fill in distillery-specific details (mash bill, cask, tasting notes, etc.) by hand.
+
+**Requires HTTPS.** Browsers only allow camera access (`getUserMedia`) on a secure origin — `https://` or `localhost`. Scanning works out of the box in local dev (`localhost`) but won't work on a plain-HTTP self-hosted deployment reached over `http://your-server:3001`. Put the container behind a reverse proxy (e.g. Caddy or nginx with Let's Encrypt, or a self-signed cert for LAN-only use) to get HTTPS on your own server. The rest of the app works fine without it — this only affects the scan button.
+
 ## Exporting entries
 
-Each whiskey's detail page has an **Export** button that downloads that bottle as JSON in this shape:
+Each whiskey's detail page has an **Export** button that copies that bottle as formatted JSON (empty/null fields omitted) to your clipboard, in this shape:
 
 ```json
 {
@@ -73,4 +79,4 @@ Each whiskey's detail page has an **Export** button that downloads that bottle a
 }
 ```
 
-The collection page's **Export All** button downloads every entry as a JSON array in the same shape.
+The collection page's **Export All** button copies every entry as a JSON array in the same shape.

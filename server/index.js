@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import whiskeysRouter from "./routes/whiskeys.js";
+import lookupRouter from "./routes/lookup.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/whiskeys", whiskeysRouter);
+app.use("/api/lookup", lookupRouter);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // In production the client is built into ./public and served from the same

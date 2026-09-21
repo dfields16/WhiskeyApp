@@ -59,3 +59,7 @@ export function exportWhiskeyJson(id) {
 export function exportAllWhiskeysJson() {
   return fetchExportText();
 }
+
+export function lookupBarcode(code) {
+  return fetch(`/api/lookup/barcode/${encodeURIComponent(code)}`).then(handle);
+}

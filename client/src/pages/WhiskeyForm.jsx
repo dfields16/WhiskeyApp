@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { createWhiskey, getWhiskey, updateWhiskey } from "../api.js";
+import { createWhiskey, getWhiskey, lookupBarcode, updateWhiskey } from "../api.js";
+
+// The barcode-scanning library is sizable, so it's only fetched when someone
+// actually opens the scanner instead of bloating the main app bundle.
+const BarcodeScanner = lazy(() => import("../components/BarcodeScanner.jsx"));
 
 const EMPTY = {
   name: "",
@@ -39,6 +43,8 @@ export default function WhiskeyForm({ mode }) {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(0);
+  const [scanning, setScanning] = useState(false);
+  const [scanStatus, setScanStatus] = useState(null);
 
   const isLastStep = step === STEPS.length - 1;
 
@@ -84,6 +90,26 @@ export default function WhiskeyForm({ mode }) {
     setStep((s) => Math.max(s - 1, 0));
   }
 
+  async function handleBarcodeDetected(code) {
+    setScanning(false);
+    setScanStatus(`Looking up barcode ${code}...`);
+    try {
+      const product = await lookupBarcode(code);
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name.trim() ? prev.name : product.name || prev.name,
+        type: prev.type.trim() ? prev.type : product.type || prev.type,
+        details: {
+          ...prev.details,
+          dist: prev.details.dist.trim() ? prev.details.dist : product.brand || prev.details.dist,
+        },
+      }));
+      setScanStatus(`Filled from scan: ${product.name}`);
+    } catch (err) {
+      setScanStatus(`Scanned ${code}, but ${err.message.toLowerCase()}. Enter details manually.`);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!isLastStep) {
@@ -111,6 +137,10 @@ export default function WhiskeyForm({ mode }) {
     basics: (
       <fieldset>
         <legend>Basics</legend>
+        <button type="button" className="btn scan-btn" onClick={() => setScanning(true)}>
+          📷 Scan Barcode
+        </button>
+        {scanStatus && <p className="scan-status">{scanStatus}</p>}
         <Field label="Name" required value={form.name} onChange={(v) => setField("name", v)} />
         <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
         <Field
@@ -236,6 +266,12 @@ export default function WhiskeyForm({ mode }) {
       </ol>
 
       {error && <p className="error">{error}</p>}
+
+      {scanning && (
+        <Suspense fallback={<div className="scanner-overlay" />}>
+          <BarcodeScanner onDetect={handleBarcodeDetected} onClose={() => setScanning(false)} />
+        </Suspense>
+      )}
 
       <form className="whiskey-form" onSubmit={handleSubmit}>
         {sections[STEPS[step].key]}
