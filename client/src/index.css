@@ -199,6 +199,16 @@ a {
   color: var(--muted);
 }
 
+@media (max-width: 640px) {
+  .search-input {
+    flex-basis: 100%;
+  }
+
+  .control-group {
+    min-width: 0;
+  }
+}
+
 .text-input,
 .select-input {
   width: 100%;
