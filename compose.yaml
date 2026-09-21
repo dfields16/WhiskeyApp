@@ -2,6 +2,11 @@ services:
   whiskeyapp:
     build: .
     image: whiskeyapp:latest
+    # This image is only ever built locally from the Dockerfile above, never
+    # pulled from a registry — tells `docker compose pull` (which Komodo and
+    # other deploy tools run as a separate step) to skip this service instead
+    # of trying to fetch "whiskeyapp" from Docker Hub and failing.
+    pull_policy: build
     restart: unless-stopped
     ports:
       - "3001:3001"
