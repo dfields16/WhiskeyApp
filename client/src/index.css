@@ -85,21 +85,16 @@ a {
 }
 
 .action-btn {
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.5rem 0.9rem;
-  min-width: 3.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  justify-content: center;
 }
 
 .action-icon {
-  width: 1.2rem;
-  height: 1.2rem;
-}
-
-.action-label {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {
@@ -116,11 +111,6 @@ a {
     background: rgba(28, 24, 21, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--border);
-  }
-
-  .action-btn {
-    flex: 1;
-    min-width: 0;
   }
 
   .detail-page {

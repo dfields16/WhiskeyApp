@@ -41,13 +41,16 @@ export default function WhiskeyDetail() {
         <h1>{whiskey.name}</h1>
         <div className="actions">
           <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} />
-          <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit">
+          <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit" title="Edit">
             <Icon name="edit" className="action-icon" />
-            <span className="action-label">Edit</span>
           </Link>
-          <button className="btn btn-danger action-btn" onClick={handleDelete} aria-label="Delete">
+          <button
+            className="btn btn-danger action-btn"
+            onClick={handleDelete}
+            aria-label="Delete"
+            title="Delete"
+          >
             <Icon name="delete" className="action-icon" />
-            <span className="action-label">Delete</span>
           </button>
         </div>
       </div>

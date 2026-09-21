@@ -18,7 +18,7 @@ export default function CopyExportButton({ fetchJson, label = "Export" }) {
     }
   }
 
-  const text =
+  const statusLabel =
     state === "copying" ? "Copying" : state === "copied" ? "Copied" : state === "error" ? "Failed" : label;
   const iconName = state === "copied" ? "check" : state === "error" ? "error" : "copy";
 
@@ -28,10 +28,10 @@ export default function CopyExportButton({ fetchJson, label = "Export" }) {
       className="btn action-btn"
       onClick={handleClick}
       disabled={state === "copying"}
-      aria-label={label}
+      aria-label={statusLabel}
+      title={label}
     >
       <Icon name={iconName} className="action-icon" />
-      <span className="action-label">{text}</span>
     </button>
   );
 }

@@ -12,7 +12,14 @@ const PATHS = {
 
 export default function Icon({ name, className }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d={PATHS[name]} />
     </svg>
   );
