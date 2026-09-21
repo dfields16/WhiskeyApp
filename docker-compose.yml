@@ -1,0 +1,12 @@
+services:
+  whiskeyapp:
+    build: .
+    image: whiskeyapp:latest
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - whiskey-data:/data
+
+volumes:
+  whiskey-data:
