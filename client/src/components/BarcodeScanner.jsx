@@ -8,8 +8,20 @@ export default function BarcodeScanner({ onDetect, onClose }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const reader = new BrowserMultiFormatReader();
     let cancelled = false;
+
+    // Browsers only expose camera access on a secure origin (https:// or
+    // localhost). On plain HTTP, navigator.mediaDevices doesn't exist at
+    // all — most noticeably on iOS Safari — so check for that up front
+    // instead of letting it fail with an opaque error.
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+      setError(
+        "Camera access requires a secure connection (HTTPS). This page is loaded over plain HTTP, so scanning isn't available here — see the README for adding HTTPS to your self-hosted server."
+      );
+      return;
+    }
+
+    const reader = new BrowserMultiFormatReader();
 
     const handleResult = (result) => {
       if (result && !cancelled && !detectedRef.current) {
@@ -40,11 +52,13 @@ export default function BarcodeScanner({ onDetect, onClose }) {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(
-            err.name === "NotAllowedError"
-              ? "Camera access was denied. Allow camera access to scan a barcode."
-              : "Couldn't access a camera on this device."
-          );
+          if (err.name === "NotAllowedError") {
+            setError("Camera access was denied. Allow camera access to scan a barcode.");
+          } else if (err.name === "NotFoundError") {
+            setError("No camera was found on this device.");
+          } else {
+            setError(`Couldn't access the camera (${err.message || err.name || "unknown error"}).`);
+          }
         }
       }
     }

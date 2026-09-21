@@ -297,6 +297,20 @@ function Field({ label, value, onChange, type = "text", textarea = false, ...res
       <span>{label}</span>
       {textarea ? (
         <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} {...rest} />
+      ) : type === "date" ? (
+        <div className="date-field">
+          <input type="date" value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
+          {value && (
+            <button
+              type="button"
+              className="date-clear"
+              aria-label={`Clear ${label}`}
+              onClick={() => onChange("")}
+            >
+              ✕
+            </button>
+          )}
+        </div>
       ) : (
         <input type={type} value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
       )}
