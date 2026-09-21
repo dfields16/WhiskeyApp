@@ -118,3 +118,11 @@ web-build/
 
 # macOS
 .DS_Store
+
+# WhiskeyApp
+server/data/
+server/public/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
