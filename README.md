@@ -43,13 +43,7 @@ docker build -t whiskeyapp .
 docker run -d --name whiskeyapp -p 3001:3001 -v whiskey-data:/data whiskeyapp
 ```
 
-## Scanning a barcode (mobile)
-
-The Basics step of the add/edit form has a **📷 Scan Barcode** button that opens your camera, reads a UPC/EAN barcode, and looks it up to pre-fill the name, type, and distillery/brand fields (anything you've already typed is left alone). It uses two free, keyless APIs — [Open Food Facts](https://world.openfoodfacts.org/) first, then [UPCitemdb](https://www.upcitemdb.com/)'s trial endpoint (capped at 100 lookups/day per server) as a fallback — so coverage varies by product and neither is whiskey-specific; you'll often still need to fill in distillery-specific details (mash bill, cask, tasting notes, etc.) by hand.
-
-**Requires HTTPS.** Browsers only allow camera access (`getUserMedia`) on a secure origin — `https://` or `localhost`. Scanning works out of the box in local dev (`localhost`) but won't work on a plain-HTTP self-hosted deployment reached over `http://your-server:3001`. The rest of the app works fine without it — this only affects the scan button.
-
-### Enabling HTTPS with a self-signed cert (LAN-only testing)
+## Enabling HTTPS with a self-signed cert (optional, LAN-only testing)
 
 The server can terminate HTTPS itself — no reverse proxy needed — if you point it at a cert and key via the `TLS_CERT_PATH`/`TLS_KEY_PATH` env vars. These steps generate a self-signed cert good for your LAN IP (works on WSL/Ubuntu; run them from the repo root):
 
@@ -82,7 +76,7 @@ The server can terminate HTTPS itself — no reverse proxy needed — if you poi
 
    The server logs should now say `(HTTPS)`. Visit `https://<your-LAN-IP>:3001` from your phone.
 
-5. **Trust the cert on your iPhone.** Safari will show a privacy warning first — tap "Show Details" → "visit this website" to get past it. If the scan button still won't access the camera after that, install the cert as a trusted profile instead:
+5. **Trust the cert on your iPhone.** Safari will show a privacy warning first — tap "Show Details" → "visit this website" to get past it. To avoid that warning on every visit, install the cert as a trusted profile instead:
 
    - Get `certs/cert.pem` onto the phone (AirDrop it, or email it to yourself).
    - Open it — iOS will prompt to install a profile (Settings → General → VPN & Device Management → install).

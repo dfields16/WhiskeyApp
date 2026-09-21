@@ -5,7 +5,6 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import whiskeysRouter from "./routes/whiskeys.js";
-import lookupRouter from "./routes/lookup.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -15,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/whiskeys", whiskeysRouter);
-app.use("/api/lookup", lookupRouter);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // In production the client is built into ./public and served from the same
@@ -30,9 +28,8 @@ if (fs.existsSync(publicDir)) {
 }
 
 // If TLS_KEY_PATH/TLS_CERT_PATH are set, serve HTTPS directly (e.g. with a
-// self-signed cert for LAN testing) so browsers treat the origin as secure
-// — required for camera access when scanning barcodes. Falls back to plain
-// HTTP when they're not set, so local dev is unaffected.
+// self-signed cert for LAN testing). Falls back to plain HTTP when they're
+// not set, so local dev is unaffected.
 const tlsKeyPath = process.env.TLS_KEY_PATH;
 const tlsCertPath = process.env.TLS_CERT_PATH;
 
