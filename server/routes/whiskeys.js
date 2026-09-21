@@ -45,9 +45,9 @@ router.get("/", (req, res) => {
 // Export the whole collection in the nested JSON format
 router.get("/export", (req, res) => {
   const rows = listStmt.all();
-  const whiskeys = rows.map(rowToWhiskey).map(stripMeta);
+  const whiskeys = rows.map(rowToWhiskey).map(stripMeta).map(stripEmpty);
   res.setHeader("Content-Disposition", 'attachment; filename="whiskey-collection.json"');
-  res.json(whiskeys);
+  res.type("application/json").send(JSON.stringify(whiskeys, null, 2));
 });
 
 router.get("/:id", (req, res) => {
@@ -59,10 +59,10 @@ router.get("/:id", (req, res) => {
 router.get("/:id/export", (req, res) => {
   const row = getStmt.get(req.params.id);
   if (!row) return res.status(404).json({ error: "Not found" });
-  const whiskey = stripMeta(rowToWhiskey(row));
+  const whiskey = stripEmpty(stripMeta(rowToWhiskey(row)));
   const filename = `${(whiskey.name || "whiskey").replace(/[^a-z0-9_-]+/gi, "_")}.json`;
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
-  res.json(whiskey);
+  res.type("application/json").send(JSON.stringify(whiskey, null, 2));
 });
 
 router.post("/", (req, res) => {
@@ -93,6 +93,27 @@ router.delete("/:id", (req, res) => {
 
 function stripMeta({ id, createdAt, updatedAt, ...rest }) {
   return rest;
+}
+
+// Recursively drops null/undefined/empty-string values (and objects left
+// empty by that) so exported JSON only contains fields that are actually set.
+function stripEmpty(value) {
+  if (Array.isArray(value)) {
+    return value.map(stripEmpty).filter((v) => v !== undefined);
+  }
+  if (value !== null && typeof value === "object") {
+    const out = {};
+    for (const [key, raw] of Object.entries(value)) {
+      const cleaned = stripEmpty(raw);
+      if (cleaned === null || cleaned === undefined || cleaned === "") continue;
+      if (typeof cleaned === "object" && !Array.isArray(cleaned) && Object.keys(cleaned).length === 0) {
+        continue;
+      }
+      out[key] = cleaned;
+    }
+    return out;
+  }
+  return value;
 }
 
 export default router;

@@ -40,7 +40,6 @@ export default function WhiskeyForm({ mode }) {
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState(0);
 
-  const isStepper = mode === "create";
   const isLastStep = step === STEPS.length - 1;
 
   useEffect(() => {
@@ -87,7 +86,7 @@ export default function WhiskeyForm({ mode }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (isStepper && !isLastStep) {
+    if (!isLastStep) {
       goNext();
       return;
     }
@@ -220,43 +219,35 @@ export default function WhiskeyForm({ mode }) {
       </Link>
       <h1>{mode === "edit" ? "Edit Whiskey" : "Add Whiskey"}</h1>
 
-      {isStepper && (
-        <ol className="stepper">
-          {STEPS.map((s, i) => (
-            <li
-              key={s.key}
-              className={
-                "stepper-item" +
-                (i === step ? " active" : "") +
-                (i < step ? " done" : "")
-              }
-            >
-              <span className="stepper-index">{i + 1}</span>
-              <span className="stepper-label">{s.title}</span>
-            </li>
-          ))}
-        </ol>
-      )}
+      <ol className="stepper">
+        {STEPS.map((s, i) => (
+          <li
+            key={s.key}
+            className={
+              "stepper-item" +
+              (i === step ? " active" : "") +
+              (i < step ? " done" : "")
+            }
+          >
+            <span className="stepper-index">{i + 1}</span>
+            <span className="stepper-label">{s.title}</span>
+          </li>
+        ))}
+      </ol>
 
       {error && <p className="error">{error}</p>}
 
       <form className="whiskey-form" onSubmit={handleSubmit}>
-        {isStepper ? sections[STEPS[step].key] : (
-          <>
-            {sections.basics}
-            {sections.details}
-            {sections.taste}
-          </>
-        )}
+        {sections[STEPS[step].key]}
 
         <div className="form-nav">
-          {isStepper && step > 0 && (
+          {step > 0 && (
             <button type="button" className="btn" onClick={goBack}>
               Back
             </button>
           )}
           <button className="btn btn-primary" type="submit" disabled={saving}>
-            {saving ? "Saving..." : isStepper && !isLastStep ? "Next" : "Save"}
+            {saving ? "Saving..." : isLastStep ? "Save" : "Next"}
           </button>
         </div>
       </form>

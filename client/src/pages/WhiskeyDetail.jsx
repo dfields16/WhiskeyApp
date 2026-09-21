@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { deleteWhiskey, exportUrl, getWhiskey } from "../api.js";
+import { deleteWhiskey, exportWhiskeyJson, getWhiskey } from "../api.js";
+import CopyExportButton from "../components/CopyExportButton.jsx";
 
 export default function WhiskeyDetail() {
   const { id } = useParams();
@@ -34,9 +35,7 @@ export default function WhiskeyDetail() {
       <div className="section-header">
         <h1>{whiskey.name}</h1>
         <div className="actions">
-          <a className="btn" href={exportUrl(whiskey.id)} download>
-            Export
-          </a>
+          <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} />
           <Link className="btn" to={`/whiskey/${whiskey.id}/edit`}>
             Edit
           </Link>

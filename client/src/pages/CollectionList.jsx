@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listWhiskeys, exportUrl } from "../api.js";
+import { listWhiskeys, exportAllWhiskeysJson } from "../api.js";
+import CopyExportButton from "../components/CopyExportButton.jsx";
 
 export default function CollectionList() {
   const [whiskeys, setWhiskeys] = useState([]);
@@ -22,9 +23,7 @@ export default function CollectionList() {
       <div className="section-header">
         <h1>My Collection</h1>
         {whiskeys.length > 0 && (
-          <a className="btn" href={exportUrl()} download>
-            Export All
-          </a>
+          <CopyExportButton fetchJson={exportAllWhiskeysJson} label="Export All" />
         )}
       </div>
 

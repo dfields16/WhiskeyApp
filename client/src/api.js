@@ -36,6 +36,26 @@ export function deleteWhiskey(id) {
   return fetch(`${BASE}/${id}`, { method: "DELETE" }).then(handle);
 }
 
-export function exportUrl(id) {
+function exportUrl(id) {
   return id ? `${BASE}/${id}/export` : `${BASE}/export`;
+}
+
+// The server already returns formatted, empty-value-stripped JSON text for
+// export endpoints, so fetch it as text and reuse it verbatim (e.g. for
+// copying to the clipboard) rather than re-serializing.
+async function fetchExportText(id) {
+  const res = await fetch(exportUrl(id));
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Request failed (${res.status})`);
+  }
+  return res.text();
+}
+
+export function exportWhiskeyJson(id) {
+  return fetchExportText(id);
+}
+
+export function exportAllWhiskeysJson() {
+  return fetchExportText();
 }
