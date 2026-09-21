@@ -112,20 +112,22 @@ export default function WhiskeyForm({ mode }) {
       <fieldset>
         <legend>Basics</legend>
         <Field label="Name" required value={form.name} onChange={(v) => setField("name", v)} />
-        <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
-        <Field
-          label="Age (years)"
-          type="number"
-          value={form.age}
-          onChange={(v) => setField("age", v)}
-        />
-        <Field
-          label="Proof"
-          type="number"
-          step="0.1"
-          value={form.proof}
-          onChange={(v) => setField("proof", v)}
-        />
+        <div className="field-row">
+          <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
+          <Field
+            label="Age (years)"
+            type="number"
+            value={form.age}
+            onChange={(v) => setField("age", v)}
+          />
+          <Field
+            label="Proof"
+            type="number"
+            step="0.1"
+            value={form.proof}
+            onChange={(v) => setField("proof", v)}
+          />
+        </div>
       </fieldset>
     ),
     details: (
