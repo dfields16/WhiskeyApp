@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteWhiskey, exportWhiskeyJson, getWhiskey } from "../api.js";
 import CopyExportButton from "../components/CopyExportButton.jsx";
+import Icon from "../components/Icon.jsx";
 
 export default function WhiskeyDetail() {
   const { id } = useParams();
@@ -38,22 +39,17 @@ export default function WhiskeyDetail() {
 
       <div className="section-header">
         <h1>{whiskey.name}</h1>
-      </div>
-
-      <div className="actions">
-        <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} icon="📋" />
-        <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit">
-          <span className="action-icon" aria-hidden="true">
-            ✏️
-          </span>
-          <span className="action-label">Edit</span>
-        </Link>
-        <button className="btn btn-danger action-btn" onClick={handleDelete} aria-label="Delete">
-          <span className="action-icon" aria-hidden="true">
-            🗑️
-          </span>
-          <span className="action-label">Delete</span>
-        </button>
+        <div className="actions">
+          <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} />
+          <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit">
+            <Icon name="edit" className="action-icon" />
+            <span className="action-label">Edit</span>
+          </Link>
+          <button className="btn btn-danger action-btn" onClick={handleDelete} aria-label="Delete">
+            <Icon name="delete" className="action-icon" />
+            <span className="action-label">Delete</span>
+          </button>
+        </div>
       </div>
 
       {hasSummary && (

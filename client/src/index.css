@@ -82,7 +82,6 @@ a {
 .actions {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .action-btn {
@@ -93,8 +92,8 @@ a {
 }
 
 .action-icon {
-  font-size: 1.2rem;
-  line-height: 1;
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .action-label {
