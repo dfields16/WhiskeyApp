@@ -286,23 +286,27 @@ function DateField({ label, value, onChange, ...rest }) {
 
   return (
     <div className="field">
-      <label>
-        <span>{label}</span>
+      <span>{label}</span>
+      <div className="date-row">
         <input
           key={resetKey}
           type="date"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          aria-label={label}
           {...rest}
         />
-      </label>
-      {/* Deliberately outside the <label>: iOS Safari can swallow taps on an
-          interactive element nested inside a label meant for another control. */}
-      {value && (
-        <button type="button" className="date-clear-link" onClick={handleClear}>
-          Clear {label.toLowerCase()}
-        </button>
-      )}
+        {value && (
+          <button
+            type="button"
+            className="date-clear"
+            aria-label={`Clear ${label}`}
+            onClick={handleClear}
+          >
+            ✕
+          </button>
+        )}
+      </div>
     </div>
   );
 }
