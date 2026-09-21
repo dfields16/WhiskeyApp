@@ -31,22 +31,29 @@ export default function WhiskeyDetail() {
   const hasTaste = Object.values(taste).some(isFilled);
 
   return (
-    <div>
+    <div className="detail-page">
       <Link to="/" className="back-link">
         &larr; Back to collection
       </Link>
 
       <div className="section-header">
         <h1>{whiskey.name}</h1>
-        <div className="actions">
-          <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} />
-          <Link className="btn" to={`/whiskey/${whiskey.id}/edit`}>
-            Edit
-          </Link>
-          <button className="btn btn-danger" onClick={handleDelete}>
-            Delete
-          </button>
-        </div>
+      </div>
+
+      <div className="actions">
+        <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} icon="📋" />
+        <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit">
+          <span className="action-icon" aria-hidden="true">
+            ✏️
+          </span>
+          <span className="action-label">Edit</span>
+        </Link>
+        <button className="btn btn-danger action-btn" onClick={handleDelete} aria-label="Delete">
+          <span className="action-icon" aria-hidden="true">
+            🗑️
+          </span>
+          <span className="action-label">Delete</span>
+        </button>
       </div>
 
       {hasSummary && (
