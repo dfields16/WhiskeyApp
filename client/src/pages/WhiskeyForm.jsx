@@ -99,6 +99,8 @@ export default function WhiskeyForm({ mode }) {
         ...prev,
         name: prev.name.trim() ? prev.name : product.name || prev.name,
         type: prev.type.trim() ? prev.type : product.type || prev.type,
+        age: prev.age !== "" ? prev.age : product.age ?? prev.age,
+        proof: prev.proof !== "" ? prev.proof : product.proof ?? prev.proof,
         details: {
           ...prev.details,
           dist: prev.details.dist.trim() ? prev.details.dist : product.brand || prev.details.dist,

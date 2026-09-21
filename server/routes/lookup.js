@@ -22,6 +22,22 @@ function detectType(text) {
   return null;
 }
 
+// Retailer titles/descriptions often state proof plainly ("107 Proof") or,
+// more tersely in all-caps titles, as a trailing token ("750ML 107P").
+function extractProof(text) {
+  const t = text || "";
+  const explicit = t.match(/(\d+(?:\.\d+)?)\s*(?:degrees?\s*)?proof\b/i);
+  if (explicit) return Number(explicit[1]);
+  const abbreviated = t.match(/\b(\d{2,3}(?:\.\d+)?)\s*p\b/i);
+  if (abbreviated) return Number(abbreviated[1]);
+  return null;
+}
+
+function extractAge(text) {
+  const match = (text || "").match(/\b(\d{1,2})\s*(?:years?|yrs?|yo)\b/i);
+  return match ? Number(match[1]) : null;
+}
+
 // Open Food Facts: free, keyless, no rate limit for occasional lookups.
 // https://world.openfoodfacts.org/data
 async function lookupOpenFoodFacts(code) {
@@ -40,6 +56,7 @@ async function lookupOpenFoodFacts(code) {
     name,
     brand: p.brands || null,
     category: p.categories || "",
+    description: p.generic_name || p.generic_name_en || "",
   };
 }
 
@@ -57,6 +74,7 @@ async function lookupUpcItemDb(code) {
     name: item.title,
     brand: item.brand || null,
     category: item.category || "",
+    description: item.description || "",
   };
 }
 
@@ -80,11 +98,18 @@ router.get("/barcode/:code", async (req, res) => {
     return res.status(404).json({ error: `No product found for barcode ${code}` });
   }
 
+  const text = [openFoodFacts, upcItemDb]
+    .filter(Boolean)
+    .flatMap((m) => [m.category, m.description])
+    .join(" ");
+
   res.json({
     barcode: code,
     name: match.name,
     brand: match.brand,
-    type: detectType(`${openFoodFacts?.category || ""} ${upcItemDb?.category || ""}`),
+    type: detectType(text),
+    proof: extractProof(text),
+    age: extractAge(text),
     source: openFoodFacts ? "openfoodfacts" : "upcitemdb",
   });
 });
