@@ -29,7 +29,8 @@ The Vite dev server proxies `/api/*` requests to the Express server, so open `ht
 The whole app — API and built React client — runs as a single container. The SQLite database is stored on a named volume so it survives restarts and rebuilds.
 
 ```bash
-docker compose up -d --build
+docker compose build
+docker compose up -d
 ```
 
 The app is then available at `http://<your-server>:3001`.
