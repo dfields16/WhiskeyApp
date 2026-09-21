@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import https from "https";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -28,6 +29,23 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`WhiskeyApp server listening on port ${PORT}`);
-});
+// If TLS_KEY_PATH/TLS_CERT_PATH are set, serve HTTPS directly (e.g. with a
+// self-signed cert for LAN testing) so browsers treat the origin as secure
+// — required for camera access when scanning barcodes. Falls back to plain
+// HTTP when they're not set, so local dev is unaffected.
+const tlsKeyPath = process.env.TLS_KEY_PATH;
+const tlsCertPath = process.env.TLS_CERT_PATH;
+
+if (tlsKeyPath && tlsCertPath) {
+  const options = {
+    key: fs.readFileSync(tlsKeyPath),
+    cert: fs.readFileSync(tlsCertPath),
+  };
+  https.createServer(options, app).listen(PORT, () => {
+    console.log(`WhiskeyApp server listening on port ${PORT} (HTTPS)`);
+  });
+} else {
+  app.listen(PORT, () => {
+    console.log(`WhiskeyApp server listening on port ${PORT} (HTTP)`);
+  });
+}

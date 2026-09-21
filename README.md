@@ -47,7 +47,62 @@ docker run -d --name whiskeyapp -p 3001:3001 -v whiskey-data:/data whiskeyapp
 
 The Basics step of the add/edit form has a **📷 Scan Barcode** button that opens your camera, reads a UPC/EAN barcode, and looks it up to pre-fill the name, type, and distillery/brand fields (anything you've already typed is left alone). It uses two free, keyless APIs — [Open Food Facts](https://world.openfoodfacts.org/) first, then [UPCitemdb](https://www.upcitemdb.com/)'s trial endpoint (capped at 100 lookups/day per server) as a fallback — so coverage varies by product and neither is whiskey-specific; you'll often still need to fill in distillery-specific details (mash bill, cask, tasting notes, etc.) by hand.
 
-**Requires HTTPS.** Browsers only allow camera access (`getUserMedia`) on a secure origin — `https://` or `localhost`. Scanning works out of the box in local dev (`localhost`) but won't work on a plain-HTTP self-hosted deployment reached over `http://your-server:3001`. Put the container behind a reverse proxy (e.g. Caddy or nginx with Let's Encrypt, or a self-signed cert for LAN-only use) to get HTTPS on your own server. The rest of the app works fine without it — this only affects the scan button.
+**Requires HTTPS.** Browsers only allow camera access (`getUserMedia`) on a secure origin — `https://` or `localhost`. Scanning works out of the box in local dev (`localhost`) but won't work on a plain-HTTP self-hosted deployment reached over `http://your-server:3001`. The rest of the app works fine without it — this only affects the scan button.
+
+### Enabling HTTPS with a self-signed cert (LAN-only testing)
+
+The server can terminate HTTPS itself — no reverse proxy needed — if you point it at a cert and key via the `TLS_CERT_PATH`/`TLS_KEY_PATH` env vars. These steps generate a self-signed cert good for your LAN IP (works on WSL/Ubuntu; run them from the repo root):
+
+1. **Find your LAN IP** (the address your phone will use to reach this machine):
+
+   ```bash
+   hostname -I | awk '{print $1}'
+   ```
+
+   Note it down — you'll need it below. (If you're on WSL2 with the default NAT network, this is the WSL VM's own IP, not your Windows host's LAN IP — see the WSL note below.)
+
+2. **Generate the cert**, replacing `192.168.1.50` with the IP from step 1:
+
+   ```bash
+   mkdir -p certs
+   IP=192.168.1.50
+   openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+     -keyout certs/key.pem -out certs/cert.pem \
+     -subj "/CN=$IP" \
+     -addext "subjectAltName=IP:$IP"
+   ```
+
+3. **Enable it in `docker-compose.yml`** — uncomment the `./certs:/certs:ro` volume line and the `environment:` block (both already there, commented out).
+
+4. **Rebuild and restart**:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+   The server logs should now say `(HTTPS)`. Visit `https://<your-LAN-IP>:3001` from your phone.
+
+5. **Trust the cert on your iPhone.** Safari will show a privacy warning first — tap "Show Details" → "visit this website" to get past it. If the scan button still won't access the camera after that, install the cert as a trusted profile instead:
+
+   - Get `certs/cert.pem` onto the phone (AirDrop it, or email it to yourself).
+   - Open it — iOS will prompt to install a profile (Settings → General → VPN & Device Management → install).
+   - Then go to Settings → General → About → Certificate Trust Settings, and enable full trust for the certificate.
+
+**WSL2 networking note:** if your phone can't reach `https://<WSL-IP>:3001` at all, it's a Windows-side networking gap, not the app. Newer WSL (Windows 11, WSL ≥ 2.0.0) can use *mirrored* networking, which makes the WSL VM share the Windows host's network directly — add this to `%UserProfile%\.wslconfig` on Windows, then `wsl --shutdown` and restart WSL:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+
+With mirrored networking, use your Windows machine's own LAN IP (not the WSL-internal one) in steps 1–2 above. On older WSL without mirrored mode, forward the port from Windows to WSL instead (run in an admin PowerShell, replacing `<WSL-IP>` with the address from step 1):
+
+```powershell
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=3001 connectaddress=<WSL-IP> connectport=3001
+netsh advfirewall firewall add rule name="WhiskeyApp" dir=in action=allow protocol=TCP localport=3001
+```
+
+Then use your Windows machine's LAN IP from your phone.
 
 ## Exporting entries
 
