@@ -112,20 +112,22 @@ export default function WhiskeyForm({ mode }) {
       <fieldset>
         <legend>Basics</legend>
         <Field label="Name" required value={form.name} onChange={(v) => setField("name", v)} />
-        <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
-        <Field
-          label="Age (years)"
-          type="number"
-          value={form.age}
-          onChange={(v) => setField("age", v)}
-        />
-        <Field
-          label="Proof"
-          type="number"
-          step="0.1"
-          value={form.proof}
-          onChange={(v) => setField("proof", v)}
-        />
+        <div className="field-row">
+          <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
+          <Field
+            label="Age (years)"
+            type="number"
+            value={form.age}
+            onChange={(v) => setField("age", v)}
+          />
+          <Field
+            label="Proof"
+            type="number"
+            step="0.1"
+            value={form.proof}
+            onChange={(v) => setField("proof", v)}
+          />
+        </div>
       </fieldset>
     ),
     details: (
@@ -256,6 +258,10 @@ export default function WhiskeyForm({ mode }) {
 }
 
 function Field({ label, value, onChange, type = "text", textarea = false, ...rest }) {
+  if (type === "date") {
+    return <DateField label={label} value={value} onChange={onChange} {...rest} />;
+  }
+
   return (
     <label className="field">
       <span>{label}</span>
@@ -265,5 +271,44 @@ function Field({ label, value, onChange, type = "text", textarea = false, ...res
         <input type={type} value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
       )}
     </label>
+  );
+}
+
+function DateField({ label, value, onChange, ...rest }) {
+  // Safari updates a date input's underlying value when cleared to "" but
+  // doesn't always redraw its native picker UI to match. Forcing a remount
+  // (via a key that changes only on clear) sidesteps that instead of
+  // patching the existing DOM node.
+  const [resetKey, setResetKey] = useState(0);
+
+  function handleClear() {
+    onChange("");
+    setResetKey((k) => k + 1);
+  }
+
+  return (
+    <div className="field">
+      <span>{label}</span>
+      <div className="date-row">
+        <input
+          key={resetKey}
+          type="date"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label={label}
+          {...rest}
+        />
+        {value && (
+          <button
+            type="button"
+            className="date-clear"
+            aria-label={`Clear ${label}`}
+            onClick={handleClear}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

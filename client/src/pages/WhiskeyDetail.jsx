@@ -25,6 +25,9 @@ export default function WhiskeyDetail() {
   if (!whiskey) return <p>Loading...</p>;
 
   const { details, taste } = whiskey;
+  const isFilled = (v) => v !== null && v !== undefined && v !== "";
+  const hasDetails = Object.values(details).some(isFilled);
+  const hasTaste = Object.values(taste).some(isFilled);
 
   return (
     <div>
@@ -51,38 +54,42 @@ export default function WhiskeyDetail() {
         <Fact label="Proof" value={whiskey.proof} />
       </div>
 
-      <section className="card">
-        <h2>Details</h2>
-        <div className="fact-grid">
-          <Fact label="Distillery" value={details.dist} />
-          <Fact label="Location" value={details.loc} />
-          <Fact label="Mash Bill" value={details.mash} />
-          <Fact label="Cask" value={details.cask} />
-          <Fact label="Cask Finish" value={details.finish} />
-          <Fact label="Distilled" value={details.distilled} />
-          <Fact label="Bottled" value={details.bottled} />
-          <Fact label="Batch" value={details.batch} />
-        </div>
-        {details.notes && (
-          <p className="notes">
-            <strong>Notes:</strong> {details.notes}
-          </p>
-        )}
-      </section>
+      {hasDetails && (
+        <section className="card">
+          <h2>Details</h2>
+          <div className="fact-grid">
+            <Fact label="Distillery" value={details.dist} />
+            <Fact label="Location" value={details.loc} />
+            <Fact label="Mash Bill" value={details.mash} />
+            <Fact label="Cask" value={details.cask} />
+            <Fact label="Cask Finish" value={details.finish} />
+            <Fact label="Distilled" value={details.distilled} />
+            <Fact label="Bottled" value={details.bottled} />
+            <Fact label="Batch" value={details.batch} />
+          </div>
+          {details.notes && (
+            <p className="notes">
+              <strong>Notes:</strong> {details.notes}
+            </p>
+          )}
+        </section>
+      )}
 
-      <section className="card">
-        <h2>Tasting Notes</h2>
-        <div className="fact-grid">
-          <Fact label="Nose" value={taste.nose} />
-          <Fact label="Palate" value={taste.palate} />
-          <Fact label="Finish" value={taste.finish} />
-        </div>
-        {taste.notes && (
-          <p className="notes">
-            <strong>Notes:</strong> {taste.notes}
-          </p>
-        )}
-      </section>
+      {hasTaste && (
+        <section className="card">
+          <h2>Tasting Notes</h2>
+          <div className="fact-grid">
+            <Fact label="Nose" value={taste.nose} />
+            <Fact label="Palate" value={taste.palate} />
+            <Fact label="Finish" value={taste.finish} />
+          </div>
+          {taste.notes && (
+            <p className="notes">
+              <strong>Notes:</strong> {taste.notes}
+            </p>
+          )}
+        </section>
+      )}
     </div>
   );
 }

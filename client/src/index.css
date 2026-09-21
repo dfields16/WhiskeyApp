@@ -262,6 +262,17 @@ a {
   margin-bottom: 0.9rem;
 }
 
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.field-row .field {
+  margin-bottom: 0;
+}
+
 .field span {
   font-size: 0.85rem;
   color: var(--muted);
@@ -270,6 +281,7 @@ a {
 .field input,
 .field textarea {
   padding: 0.55rem 0.65rem;
+  min-height: 2.75rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg);
@@ -279,10 +291,50 @@ a {
   transition: border-color 0.15s ease;
 }
 
+.field textarea {
+  min-height: unset;
+}
+
 .field input:focus,
 .field textarea:focus {
   outline: none;
   border-color: var(--amber);
+}
+
+.date-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.date-row input[type="date"] {
+  flex: 1;
+  min-width: 0;
+  /* Hints WebKit to draw the native calendar icon and date text in
+     light-on-dark, instead of iOS's default dark-on-dark rendering. */
+  color-scheme: dark;
+}
+
+.date-clear {
+  flex-shrink: 0;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.date-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .form-nav {
@@ -351,7 +403,28 @@ a {
 }
 
 @media (max-width: 520px) {
+  .stepper {
+    gap: 0.35rem;
+  }
+
+  .stepper-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+  }
+
   .stepper-label {
-    display: none;
+    white-space: normal;
+    line-height: 1.15;
+    font-size: 0.72rem;
+  }
+
+  .stepper-index {
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.72rem;
   }
 }
