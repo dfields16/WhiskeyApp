@@ -26,12 +26,22 @@ const EMPTY = {
   },
 };
 
+const STEPS = [
+  { key: "basics", title: "Basics" },
+  { key: "details", title: "Details" },
+  { key: "taste", title: "Tasting Notes" },
+];
+
 export default function WhiskeyForm({ mode }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [step, setStep] = useState(0);
+
+  const isStepper = mode === "create";
+  const isLastStep = step === STEPS.length - 1;
 
   useEffect(() => {
     if (mode === "edit" && id) {
@@ -61,8 +71,26 @@ export default function WhiskeyForm({ mode }) {
     });
   }
 
+  function goNext() {
+    if (STEPS[step].key === "basics" && !form.name.trim()) {
+      setError("Name is required");
+      return;
+    }
+    setError(null);
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  }
+
+  function goBack() {
+    setError(null);
+    setStep((s) => Math.max(s - 1, 0));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (isStepper && !isLastStep) {
+      goNext();
+      return;
+    }
     setSaving(true);
     setError(null);
     const payload = {
@@ -80,6 +108,111 @@ export default function WhiskeyForm({ mode }) {
     }
   }
 
+  const sections = {
+    basics: (
+      <fieldset>
+        <legend>Basics</legend>
+        <Field label="Name" required value={form.name} onChange={(v) => setField("name", v)} />
+        <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
+        <Field
+          label="Age (years)"
+          type="number"
+          value={form.age}
+          onChange={(v) => setField("age", v)}
+        />
+        <Field
+          label="Proof"
+          type="number"
+          step="0.1"
+          value={form.proof}
+          onChange={(v) => setField("proof", v)}
+        />
+      </fieldset>
+    ),
+    details: (
+      <fieldset>
+        <legend>Details</legend>
+        <Field
+          label="Distillery"
+          value={form.details.dist}
+          onChange={(v) => setField("details.dist", v)}
+        />
+        <Field
+          label="Location"
+          value={form.details.loc}
+          onChange={(v) => setField("details.loc", v)}
+        />
+        <Field
+          label="Mash Bill"
+          value={form.details.mash}
+          onChange={(v) => setField("details.mash", v)}
+        />
+        <Field
+          label="Cask"
+          value={form.details.cask}
+          onChange={(v) => setField("details.cask", v)}
+        />
+        <Field
+          label="Cask Finish"
+          value={form.details.finish}
+          onChange={(v) => setField("details.finish", v)}
+        />
+        <Field
+          label="Distilled"
+          type="date"
+          value={form.details.distilled}
+          onChange={(v) => setField("details.distilled", v)}
+        />
+        <Field
+          label="Bottled"
+          type="date"
+          value={form.details.bottled}
+          onChange={(v) => setField("details.bottled", v)}
+        />
+        <Field
+          label="Batch"
+          value={form.details.batch}
+          onChange={(v) => setField("details.batch", v)}
+        />
+        <Field
+          label="Notes"
+          textarea
+          value={form.details.notes}
+          onChange={(v) => setField("details.notes", v)}
+        />
+      </fieldset>
+    ),
+    taste: (
+      <fieldset>
+        <legend>Tasting Notes</legend>
+        <Field
+          label="Nose"
+          textarea
+          value={form.taste.nose}
+          onChange={(v) => setField("taste.nose", v)}
+        />
+        <Field
+          label="Palate"
+          textarea
+          value={form.taste.palate}
+          onChange={(v) => setField("taste.palate", v)}
+        />
+        <Field
+          label="Finish"
+          textarea
+          value={form.taste.finish}
+          onChange={(v) => setField("taste.finish", v)}
+        />
+        <Field
+          label="Notes"
+          textarea
+          value={form.taste.notes}
+          onChange={(v) => setField("taste.notes", v)}
+        />
+      </fieldset>
+    ),
+  };
+
   return (
     <div>
       <Link to="/" className="back-link">
@@ -87,111 +220,45 @@ export default function WhiskeyForm({ mode }) {
       </Link>
       <h1>{mode === "edit" ? "Edit Whiskey" : "Add Whiskey"}</h1>
 
+      {isStepper && (
+        <ol className="stepper">
+          {STEPS.map((s, i) => (
+            <li
+              key={s.key}
+              className={
+                "stepper-item" +
+                (i === step ? " active" : "") +
+                (i < step ? " done" : "")
+              }
+            >
+              <span className="stepper-index">{i + 1}</span>
+              <span className="stepper-label">{s.title}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+
       {error && <p className="error">{error}</p>}
 
       <form className="whiskey-form" onSubmit={handleSubmit}>
-        <fieldset>
-          <legend>Basics</legend>
-          <Field label="Name" required value={form.name} onChange={(v) => setField("name", v)} />
-          <Field label="Type" value={form.type} onChange={(v) => setField("type", v)} />
-          <Field
-            label="Age (years)"
-            type="number"
-            value={form.age}
-            onChange={(v) => setField("age", v)}
-          />
-          <Field
-            label="Proof"
-            type="number"
-            step="0.1"
-            value={form.proof}
-            onChange={(v) => setField("proof", v)}
-          />
-        </fieldset>
+        {isStepper ? sections[STEPS[step].key] : (
+          <>
+            {sections.basics}
+            {sections.details}
+            {sections.taste}
+          </>
+        )}
 
-        <fieldset>
-          <legend>Details</legend>
-          <Field
-            label="Distillery"
-            value={form.details.dist}
-            onChange={(v) => setField("details.dist", v)}
-          />
-          <Field
-            label="Location"
-            value={form.details.loc}
-            onChange={(v) => setField("details.loc", v)}
-          />
-          <Field
-            label="Mash Bill"
-            value={form.details.mash}
-            onChange={(v) => setField("details.mash", v)}
-          />
-          <Field
-            label="Cask"
-            value={form.details.cask}
-            onChange={(v) => setField("details.cask", v)}
-          />
-          <Field
-            label="Cask Finish"
-            value={form.details.finish}
-            onChange={(v) => setField("details.finish", v)}
-          />
-          <Field
-            label="Distilled"
-            type="date"
-            value={form.details.distilled}
-            onChange={(v) => setField("details.distilled", v)}
-          />
-          <Field
-            label="Bottled"
-            type="date"
-            value={form.details.bottled}
-            onChange={(v) => setField("details.bottled", v)}
-          />
-          <Field
-            label="Batch"
-            value={form.details.batch}
-            onChange={(v) => setField("details.batch", v)}
-          />
-          <Field
-            label="Notes"
-            textarea
-            value={form.details.notes}
-            onChange={(v) => setField("details.notes", v)}
-          />
-        </fieldset>
-
-        <fieldset>
-          <legend>Tasting Notes</legend>
-          <Field
-            label="Nose"
-            textarea
-            value={form.taste.nose}
-            onChange={(v) => setField("taste.nose", v)}
-          />
-          <Field
-            label="Palate"
-            textarea
-            value={form.taste.palate}
-            onChange={(v) => setField("taste.palate", v)}
-          />
-          <Field
-            label="Finish"
-            textarea
-            value={form.taste.finish}
-            onChange={(v) => setField("taste.finish", v)}
-          />
-          <Field
-            label="Notes"
-            textarea
-            value={form.taste.notes}
-            onChange={(v) => setField("taste.notes", v)}
-          />
-        </fieldset>
-
-        <button className="btn btn-primary" type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save"}
-        </button>
+        <div className="form-nav">
+          {isStepper && step > 0 && (
+            <button type="button" className="btn" onClick={goBack}>
+              Back
+            </button>
+          )}
+          <button className="btn btn-primary" type="submit" disabled={saving}>
+            {saving ? "Saving..." : isStepper && !isLastStep ? "Next" : "Save"}
+          </button>
+        </div>
       </form>
     </div>
   );

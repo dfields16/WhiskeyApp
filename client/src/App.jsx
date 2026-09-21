@@ -8,7 +8,8 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <Link to="/" className="brand">
-          🥃 WhiskeyApp
+          <span className="brand-icon">🥃</span>
+          <span>WhiskeyApp</span>
         </Link>
         <Link to="/new" className="btn btn-primary">
           + Add Whiskey
