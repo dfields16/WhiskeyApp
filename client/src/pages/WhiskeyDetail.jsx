@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteWhiskey, exportWhiskeyJson, getWhiskey } from "../api.js";
 import CopyExportButton from "../components/CopyExportButton.jsx";
+import Icon from "../components/Icon.jsx";
 
 export default function WhiskeyDetail() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function WhiskeyDetail() {
   const hasTaste = Object.values(taste).some(isFilled);
 
   return (
-    <div>
+    <div className="detail-page">
       <Link to="/" className="back-link">
         &larr; Back to collection
       </Link>
@@ -40,11 +41,16 @@ export default function WhiskeyDetail() {
         <h1>{whiskey.name}</h1>
         <div className="actions">
           <CopyExportButton fetchJson={() => exportWhiskeyJson(whiskey.id)} />
-          <Link className="btn" to={`/whiskey/${whiskey.id}/edit`}>
-            Edit
+          <Link className="btn action-btn" to={`/whiskey/${whiskey.id}/edit`} aria-label="Edit" title="Edit">
+            <Icon name="edit" className="action-icon" />
           </Link>
-          <button className="btn btn-danger" onClick={handleDelete}>
-            Delete
+          <button
+            className="btn btn-danger action-btn"
+            onClick={handleDelete}
+            aria-label="Delete"
+            title="Delete"
+          >
+            <Icon name="delete" className="action-icon" />
           </button>
         </div>
       </div>

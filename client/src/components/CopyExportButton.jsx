@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { copyToClipboard } from "../clipboard.js";
+import Icon from "./Icon.jsx";
 
 export default function CopyExportButton({ fetchJson, label = "Export" }) {
   const [state, setState] = useState("idle"); // idle | copying | copied | error
@@ -17,12 +18,20 @@ export default function CopyExportButton({ fetchJson, label = "Export" }) {
     }
   }
 
-  const text =
-    state === "copying" ? "Copying..." : state === "copied" ? "Copied!" : state === "error" ? "Failed" : label;
+  const statusLabel =
+    state === "copying" ? "Copying" : state === "copied" ? "Copied" : state === "error" ? "Failed" : label;
+  const iconName = state === "copied" ? "check" : state === "error" ? "error" : "copy";
 
   return (
-    <button type="button" className="btn" onClick={handleClick} disabled={state === "copying"}>
-      {text}
+    <button
+      type="button"
+      className="btn action-btn"
+      onClick={handleClick}
+      disabled={state === "copying"}
+      aria-label={statusLabel}
+      title={label}
+    >
+      <Icon name={iconName} className="action-icon" />
     </button>
   );
 }
