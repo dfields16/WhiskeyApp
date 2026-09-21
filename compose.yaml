@@ -8,8 +8,7 @@ services:
     volumes:
       - whiskey-data:/data
       # Uncomment once you've generated certs/key.pem + certs/cert.pem (see
-      # README's HTTPS section) to serve over HTTPS — needed for camera
-      # access (barcode scanning) on phones.
+      # README's HTTPS section) to serve over HTTPS.
       # - ./certs:/certs:ro
     # environment:
     #   TLS_KEY_PATH: /certs/key.pem

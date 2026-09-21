@@ -34,7 +34,7 @@ docker compose up -d --build
 
 The app is then available at `http://<your-server>:3001`.
 
-To use a different port, edit the `ports` mapping in `docker-compose.yml` (e.g. `"8080:3001"`).
+To use a different port, edit the `ports` mapping in `compose.yaml` (e.g. `"8080:3001"`).
 
 Without compose:
 
@@ -42,6 +42,8 @@ Without compose:
 docker build -t whiskeyapp .
 docker run -d --name whiskeyapp -p 3001:3001 -v whiskey-data:/data whiskeyapp
 ```
+
+**Deploying with [Komodo](https://komo.do/):** point a Komodo Stack at this repo — it finds `compose.yaml` at the repo root automatically, no extra config needed. Set the run directory to the repo root (leave the compose file path as the default).
 
 ## Enabling HTTPS with a self-signed cert (optional, LAN-only testing)
 
@@ -66,7 +68,7 @@ The server can terminate HTTPS itself — no reverse proxy needed — if you poi
      -addext "subjectAltName=IP:$IP"
    ```
 
-3. **Enable it in `docker-compose.yml`** — uncomment the `./certs:/certs:ro` volume line and the `environment:` block (both already there, commented out).
+3. **Enable it in `compose.yaml`** — uncomment the `./certs:/certs:ro` volume line and the `environment:` block (both already there, commented out).
 
 4. **Rebuild and restart**:
 
