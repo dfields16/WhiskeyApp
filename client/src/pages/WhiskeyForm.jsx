@@ -292,6 +292,12 @@ export default function WhiskeyForm({ mode }) {
 }
 
 function Field({ label, value, onChange, type = "text", textarea = false, ...rest }) {
+  // Safari updates a date input's underlying value when cleared to "" but
+  // doesn't always redraw its native picker UI to match. Forcing a remount
+  // (via a key that changes only on clear) sidesteps that instead of
+  // patching the existing DOM node.
+  const [resetKey, setResetKey] = useState(0);
+
   return (
     <label className="field">
       <span>{label}</span>
@@ -299,13 +305,22 @@ function Field({ label, value, onChange, type = "text", textarea = false, ...res
         <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} {...rest} />
       ) : type === "date" ? (
         <div className="date-field">
-          <input type="date" value={value} onChange={(e) => onChange(e.target.value)} {...rest} />
+          <input
+            key={resetKey}
+            type="date"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            {...rest}
+          />
           {value && (
             <button
               type="button"
               className="date-clear"
               aria-label={`Clear ${label}`}
-              onClick={() => onChange("")}
+              onClick={() => {
+                onChange("");
+                setResetKey((k) => k + 1);
+              }}
             >
               ✕
             </button>
