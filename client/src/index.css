@@ -201,6 +201,15 @@ a {
   letter-spacing: 0.04em;
 }
 
+.summary-card {
+  padding: 1rem 1.5rem;
+}
+
+.summary-card .fact-value {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .fact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));

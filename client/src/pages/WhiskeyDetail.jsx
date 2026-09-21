@@ -26,6 +26,7 @@ export default function WhiskeyDetail() {
 
   const { details, taste } = whiskey;
   const isFilled = (v) => v !== null && v !== undefined && v !== "";
+  const hasSummary = [whiskey.type, whiskey.age, whiskey.proof].some(isFilled);
   const hasDetails = Object.values(details).some(isFilled);
   const hasTaste = Object.values(taste).some(isFilled);
 
@@ -48,11 +49,15 @@ export default function WhiskeyDetail() {
         </div>
       </div>
 
-      <div className="fact-grid">
-        <Fact label="Type" value={whiskey.type} />
-        <Fact label="Age" value={whiskey.age ? `${whiskey.age} years` : null} />
-        <Fact label="Proof" value={whiskey.proof} />
-      </div>
+      {hasSummary && (
+        <section className="card summary-card">
+          <div className="fact-grid">
+            <Fact label="Type" value={whiskey.type} />
+            <Fact label="Age" value={whiskey.age ? `${whiskey.age} years` : null} />
+            <Fact label="Proof" value={whiskey.proof} />
+          </div>
+        </section>
+      )}
 
       {hasDetails && (
         <section className="card">
